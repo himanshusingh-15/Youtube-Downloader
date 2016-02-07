@@ -17,7 +17,9 @@ router.post('/', function(req, res, next) {
 			youtubedl(url).pipe(fs.createWriteStream(videoFileName))
 						  .on('close', function() {
 						  	console.log("Finished Downloading");
-						  	res.send('Finished Downloading');
+						  	res.writeHeader(200, {"Content-Type": "text/html"});
+						  	res.write('<html><body><a href="download/'+ info.title + '.mp4">' + info.title + '.mp4' + '</a><body></html>');
+						  	res.end();
 						  });
 			/*proc = new ffmpeg({source:stream});
 			proc.setFfmpegPath('./public/ffmpeg');
