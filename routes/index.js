@@ -7,29 +7,50 @@ ffmpeg = require('fluent-ffmpeg');
 /* GET home page. */
 router.post('/', function(req, res, next) {
 	url = req.body.url;
-	youtubedl.getInfo(url, function(err, info) {
-		if(err)
-			throw err;
-		else {
-			console.log("himanshu");
-			audioFileName = "./public/download/" + info.title + ".mp3";
-			videoFileName = "./public/download/" + info.title + ".mp4";
-			youtubedl(url).pipe(fs.createWriteStream(videoFileName))
-						  .on('close', function() {
-						  	console.log("Finished Downloading");
-						  	res.writeHeader(200, {"Content-Type": "text/html"});
-						  	res.write('<html><body><a href="download/'+ info.title + '.mp4">' + info.title + '.mp4' + '</a><body></html>');
-						  	res.end();
-						  });
-			/*proc = new ffmpeg({source:stream});
-			proc.setFfmpegPath('./public/ffmpeg');
-			proc.withAudioCodec('libmp3lame')
-			.toFormat('mp3')
-			.saveToFile(fileName, function(stdout, stderr) {
-				res.send('File Converted');
-			});
-			console.log("Completed");*/
-		}
+	var video = youtubedl(url, ['-f', '18']);
+	var size = 0;
+	var title = '';
+
+	video.on('info', function(info) {
+		'use strict';
+		size = info.size;
+		console.log('GOT video info');
+
+		title = info.title;
+		var audioFileName = "./public/download/" + title + ".mp3";
+		var videoFileName = "./public/download/" + title + ".mp4";
+		
+		video.pipe(fs.createWriteStream(videoFileName));
+
+		/*proc = new ffmpeg({source:stream});
+		proc.setFfmpegPath('./public/ffmpeg');
+		proc.withAudioCodec('libmp3lame')
+		.toFormat('mp3')
+		.saveToFile(fileName, function(stdout, stderr) {
+			res.send('File Converted');
+		});
+		console.log("Completed");*/
+	});
+
+	var pos = 0;
+	video.on('data', function data(chunk) {
+		'use strict';
+		pos += chunk.length;
+
+		if (size) {
+    		var percent = (pos / size * 100).toFixed(2);
+		    process.stdout.cursorTo(0);
+		    process.stdout.clearLine(1);
+		    process.stdout.write(percent + '%');
+  		}
+	});
+
+	video.on('end', function end() {
+		'use strict';
+		console.log('\nDone');
+		res.writeHeader(200, {"Content-Type": "text/html"});
+	  	res.write('<html><body><a href="download/'+ title + '.mp4">' + title + '.mp4' + '</a><body></html>');
+	  	res.end();
 	});
 });
 
