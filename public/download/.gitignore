@@ -1,0 +1,5 @@
+#To ignore all files in this directory
+*
+
+#To leave the gitignore file from being not commited
+!.gitignore
