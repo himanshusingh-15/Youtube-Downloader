@@ -27,7 +27,7 @@ build/Release
 node_modules
 
 #download folder
-public/download
+public/download/*
 
 # Optional npm cache directory
 .npm
