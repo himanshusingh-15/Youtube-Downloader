@@ -39,9 +39,7 @@ router.post('/', function(req, res, next) {
 
 		if (size) {
     		var percent = (pos / size * 100).toFixed(2);
-		    process.stdout.cursorTo(0);
-		    process.stdout.clearLine(1);
-		    process.stdout.write(percent + '%');
+		    console.log(percent + '%');
   		}
 	});
 
