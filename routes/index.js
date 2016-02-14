@@ -7,7 +7,7 @@ ffmpeg = require('fluent-ffmpeg');
 /* GET home page. */
 router.post('/', function(req, res, next) {
 	url = req.body.url;
-	var video = youtubedl(url, ['-f', '18']);
+	var video = youtubedl(url, ['-f', 'best']);
 	var size = 0;
 	var title = '';
 
