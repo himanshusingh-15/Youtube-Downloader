@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-fs = require('fs');
-youtubedl = require('youtube-dl');
-ffmpeg = require('fluent-ffmpeg');
+var fs = require('fs');
+var youtubedl = require('youtube-dl');
+var ffmpeg = require('fluent-ffmpeg');
 
 /* GET home page. */
 router.post('/', function(req, res, next) {
@@ -19,6 +19,13 @@ router.post('/', function(req, res, next) {
 		title = info.title;
 		var audioFileName = "./public/download/" + title + ".mp3";
 		var videoFileName = "./public/download/" + title + ".mp4";
+
+		var downlink = 'download/' + title + '.mp4';
+
+		res.render('download', {
+			title: title,
+			link: downlink
+		});
 		
 		video.pipe(fs.createWriteStream(videoFileName));
 
@@ -38,18 +45,20 @@ router.post('/', function(req, res, next) {
 		pos += chunk.length;
 
 		if (size) {
-    		var percent = (pos / size * 100).toFixed(2);
+    		var percent = (pos / size * 100).toFixed(0);
 		    console.log(percent + '%');
+		    req.app.locals.download = percent;
   		}
 	});
 
 	video.on('end', function end() {
 		'use strict';
 		console.log('\nDone');
-		res.writeHeader(200, {"Content-Type": "text/html"});
-	  	res.write('<html><body><a href="download/'+ title + '.mp4">' + title + '.mp4' + '</a><body></html>');
-	  	res.end();
+		//res.writeHeader(200, {"Content-Type": "text/html"});
+	  	//res.write('<html><body><a href="download/'+ title + '.mp4">' + title + '.mp4' + '</a><body></html>');
+	  	//res.end();
 	});
+
 });
 
 module.exports = router;

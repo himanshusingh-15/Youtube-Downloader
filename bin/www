@@ -21,6 +21,30 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+app.locals.download = 0;
+
+/**
+ * Create a Socket
+ */
+
+var io = require('socket.io')(server);
+io.on('connection', function(socket) {
+  console.log('a user connected');
+  
+  socket.on('disconnect', function() {
+    console.log('user disconnected');
+  });
+
+  socket.on('downloadinfo', function(msg) {
+    console.log(msg);
+    if (app.locals.download == 100)
+      io.emit('downloadinfo','Done');
+    else
+      io.emit('downloadinfo', app.locals.download);
+  });
+
+});
+
 /**
  * Listen on provided port, on all network interfaces.
  */
