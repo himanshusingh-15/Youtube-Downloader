@@ -9,14 +9,15 @@ router.post('/', function(req, res, next) {
 	url = req.body.url;
 	var video = youtubedl(url, ['-f', 'best']);
 	var size = 0;
-	var title = '';
 
 	video.on('info', function(info) {
 		'use strict';
 		size = info.size;
 		console.log('GOT video info');
 
-		title = info.title;
+		var title = info.title;
+		var thumbnail = info.thumbnail;
+
 		var audioFileName = "./public/download/" + title + ".mp3";
 		var videoFileName = "./public/download/" + title + ".mp4";
 
@@ -24,7 +25,8 @@ router.post('/', function(req, res, next) {
 
 		res.render('download', {
 			title: title,
-			link: downlink
+			link: downlink,
+			thumb: thumbnail
 		});
 		
 		video.pipe(fs.createWriteStream(videoFileName));

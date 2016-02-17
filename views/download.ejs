@@ -19,20 +19,27 @@
 
 		socket.on('downloadinfo', function(msg) {
 			if(msg == 'Done') {
+				console.log(intervalID);
 				clearInterval(intervalID);
-				$('#messages').append($('<li>').text(msg));
+				$('.progressbar').html(msg);
 			}
-			else
-				$('#messages').append($('<li>').text(msg));
+			else {
+				$('.progressbar').html(msg);
+			}
 		});
 
 	</script>
 
 </head>
 <body>
-	<a href="<%= link %>"><p><%= title %></p></a>
-	<br/>
-	<ul id="messages"></ul>
-
+	<div class="container">
+		<div class="row blockcontainer">
+			<img class="song_thumb col-md-3" src="<%= thumb %>" alt="<%= title %>" >
+			<div class="col-md-9 titleblock">
+				<a class="row titlelink" href="<%= link %>"><p><%= title %></p></a>
+				<p class="row progressbar"></p>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
